@@ -24,31 +24,41 @@ function start() {
       name: "name",
       type: "list",
       message: "What would you like to do?",
-      choices: ["add Deparment", "add Role", "add Employee", "Exit"],
+      choices: ["add Department", "add Role", "add Employee", "Exit"],
     })
     // if they choose to add a department then ask for department name.
     .then(function (answer) {
+        console.log(answer)
       if (answer.name === "add Department") {
         inquirer
           .prompt({
             name: "Department",
             type: "input",
-            message: "What is your Department Name",
+            message: "What is your Department Name:",
           })
           .then(function (answer) {
+            console.log(answer);
             //add department to database with connection query
             connection.query(
               "INSERT INTO departments SET ?",
               {
-                name: answer.name,
+                name: answer.Department,
               },
-
+              
               function (err, res) {
                 if (err) throw err;
+                start();
               }
             );
           });
+      }else if(answer.name === "add Role"){
+          // ask for role questions
+      }else if(answer.name === "add Employee"){
+          //ask for employee questions
+      }else if (answer.name === "Exit"){
+          connection.end();
       }
+    
       
     });
 }
