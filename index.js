@@ -31,6 +31,7 @@ function start() {
         "view Departments",
         "view Roles",
         "view Employees",
+        "update Employee Roles",
         "Exit",
       ],
     })
@@ -189,11 +190,89 @@ function start() {
           console.table(res);
           start();
         });
-        
+      } else if (answer.name === "update Employee Roles") {
+        inquirer
+          .prompt([
+            {
+              name: "title",
+              type: "list",
+              message: "Which role would you like to update?",
+              choices: [
+                "Production",
+                "Research & Development",
+                "Web Developer",
+              ],
+            },
+            {
+              name: "key",
+              type: "list",
+              message: "What would you like to update?",
+              choices: ["salary", "department_id"],
+            },
+            {
+              name: "value",
+              type: "input",
+              message: "What would you like to update it to?",
+            },
+          ])
+          .then(function (answer) {
+            console.log(answer);
+
+            if (answer.key === "salary") {
+              // console.log(answer);
+              connection.query(
+                "UPDATE roles SET ? WHERE ?",
+                [
+                  {
+                    salary: answer.value,
+                  },
+                  {
+                    title: answer.title,
+                  },
+                ],
+                function (err, res) {
+                  if (err) throw err;
+                  console.log(res);
+                  start();
+                }
+              );
+            } else if (answer.key === "department_id") {
+              console.log(answer);
+              connection.query(
+                "UPDATE roles SET ? WHERE ?",
+                [
+                  {
+                    department_id: answer.value,
+                  },
+                  {
+                    title: answer.title,
+                  },
+                ],
+                function (err, res) {
+                  if (err) throw err;
+                  console.log(res);
+                  start();
+                }
+              );
+            }
+          });
+        //   connection.query("UPDATE roles",
+        //   [
+        //       {
+        //         title: "Senior Web Developer"
+        //       },
+        //       {
+        //         salary: 130000
+        //       }
+
+        //   ],
+        //   function(err,res) {
+        //       if(err) throw err;
+        //       console.table(res.affectedRows +"")
+        //   }
+        //   )
       } else if (answer.name === "Exit") {
         connection.end();
       }
     });
 }
-
-//repromt users add deparment or roles or employees or exit
