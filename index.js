@@ -24,11 +24,19 @@ function start() {
       name: "name",
       type: "list",
       message: "What would you like to do?",
-      choices: ["add Department", "add Role", "add Employee", "Exit"],
+      choices: [
+        "add Department",
+        "add Role",
+        "add Employee",
+        "view Departments",
+        "view Roles",
+        "view Employees",
+        "Exit",
+      ],
     })
     // if they choose to add a department then ask for department name.
     .then(function (answer) {
-      console.log(answer);
+    //   console.log(answer);
       if (answer.name === "add Department") {
         inquirer
           .prompt({
@@ -37,7 +45,7 @@ function start() {
             message: "What is your Department Name:",
           })
           .then(function (answer) {
-            console.log(answer);
+            // console.log(answer);
             //add department to database with connection query
             connection.query(
               "INSERT INTO departments SET ?",
@@ -80,53 +88,60 @@ function start() {
             } else {
               department_id = 3;
             }
-            console.log(answer);
-            connection.query("INSERT INTO roles SET ?", {
-              title: answer.title,
-              salary: answer.salary,
-              department_id: department_id,
-            },
-            function(err,res){
-                if(err) throw err;
+            // console.log(answer);
+            connection.query(
+              "INSERT INTO roles SET ?",
+              {
+                title: answer.title,
+                salary: answer.salary,
+                department_id: department_id,
+              },
+              function (err, res) {
+                if (err) throw err;
                 start();
-            }
-            
+              }
             );
           });
         // ask for role questions
       } else if (answer.name === "add Employee") {
-          inquirer
+        inquirer
           .prompt([
-              {
-                name: "first_name",
-                type: "input",
-                message: "What is your first name?" 
-              },
-              {
-                  name:"last_name",
-                  type: "input",
-                  message: "What is your last name?"
-              },
-              {
-                  name: "role",
-                  type: "list",
-                  message: "What is your role?",
-                  choices: ["Marketing Director", "Research Director", "Web Developer", "Production Manager"]
-              },
-              {
-                name: "manager",
-                type: "list",
-                message: "Do you have a manager?",
-                choices: ["Daniel Mckiney", "Sarah Miller", "None"]
-              }
-          ]).then(function (answer) {
+            {
+              name: "first_name",
+              type: "input",
+              message: "What is your first name?",
+            },
+            {
+              name: "last_name",
+              type: "input",
+              message: "What is your last name?",
+            },
+            {
+              name: "role",
+              type: "list",
+              message: "What is your role?",
+              choices: [
+                "Marketing Director",
+                "Research Director",
+                "Web Developer",
+                "Production Manager",
+              ],
+            },
+            {
+              name: "manager",
+              type: "list",
+              message: "Do you have a manager?",
+              choices: ["Daniel Mckiney", "Sarah Miller", "None"],
+            },
+          ])
+          .then(function (answer) {
             var role_id;
             if (answer.role === "Marketing Director") {
               role_id = 1;
             } else if (answer.role === "Research Director") {
               role_id = 2;
             } else if (answer.role === "Web Developer") {
-                role_id = 3;
+              role_id = 3;
             } else {
               role_id = 4;
             }
@@ -134,26 +149,45 @@ function start() {
             if (answer.manager === "Daniel Mckiney") {
               manager_id = 1;
             } else if (answer.manager === "Sarah Miller") {
-                manager_id = 2;
-            }else {
-                manager_id = null
+              manager_id = 2;
+            } else {
+              manager_id = null;
             }
-            connection.query("INSERT INTO employees SET ?", {
+            connection.query(
+              "INSERT INTO employees SET ?",
+              {
                 first_name: answer.first_name,
                 last_name: answer.last_name,
                 role_id: role_id,
-                manager_id: manager_id
+                manager_id: manager_id,
               },
-              function(err,res){
-                  if(err) throw err;
-                  start();
+              function (err, res) {
+                if (err) throw err;
+                start();
               }
-              
-              )
-          })
-        }
-        else if (answer.name === "Exit") {
-                connection.end();
+            );
+          });
+      } //this is where we view departments
+      else if (answer.name === "view Departments") {
+        connection.query(
+            "SELECT * FROM departments",
+            {
+                name: answer.Department,
+            },function (err, res) {
+                if (err) throw err;
+                console.table(res);
+                start();
+              }
+        )
+    
+        
+      } else if (answer.role === "view all employees by roles") {
+          
+        //this is where we view roles
+      } else if (answer === "view all employees ") {
+        // this is where we view employees
+      } else if (answer.name === "Exit") {
+        connection.end();
       }
     });
 }
