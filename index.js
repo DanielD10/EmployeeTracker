@@ -36,7 +36,7 @@ function start() {
     })
     // if they choose to add a department then ask for department name.
     .then(function (answer) {
-    //   console.log(answer);
+      //   console.log(answer);
       if (answer.name === "add Department") {
         inquirer
           .prompt({
@@ -169,23 +169,27 @@ function start() {
           });
       } //this is where we view departments
       else if (answer.name === "view Departments") {
-        connection.query(
-            "SELECT * FROM departments",
-            {
-                name: answer.Department,
-            },function (err, res) {
-                if (err) throw err;
-                console.table(res);
-                start();
-              }
-        )
-    
-        
-      } else if (answer.role === "view all employees by roles") {
-          
-        //this is where we view roles
-      } else if (answer === "view all employees ") {
+        connection.query("SELECT * FROM departments", function (err, res) {
+          if (err) throw err;
+          console.table(res);
+          start();
+        });
+      } //this is where we view roles
+      else if (answer.name === "view Roles") {
+        connection.query("SELECT * FROM roles", function (err, res) {
+          if (err) throw err;
+          console.table(res);
+          start();
+        });
+
         // this is where we view employees
+      } else if (answer.name === "view Employees") {
+        connection.query("SELECT * FROM employees", function (err, res) {
+          if (err) throw err;
+          console.table(res);
+          start();
+        });
+        
       } else if (answer.name === "Exit") {
         connection.end();
       }
